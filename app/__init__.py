@@ -1,3 +1,5 @@
+# app/__init__.py
+
 from flask import Flask
 from app.route import animals_route
 from app.route import employees_route
@@ -13,6 +15,7 @@ DATABASE_HOST = os.getenv('DATABASE_HOST')
 DATABASE_USER = os.getenv('DATABASE_USER')
 DATABASE_PORT = os.getenv('DATABASE_PORT')
 DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
+
 app.config["SQLALCHEMY_DATABASE_URI"] = f"{DATABASE_TYPE}://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"
 
 db.init_app(app)
