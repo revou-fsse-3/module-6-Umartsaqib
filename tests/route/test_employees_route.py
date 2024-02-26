@@ -1,10 +1,15 @@
 import json
 import pytest
-from app import app, db
+from app import create_app
+from app.utils.database import db
 from app.models.employees import Employees
 
 @pytest.fixture
-def client():
+def app():
+    return create_app()
+
+@pytest.fixture
+def test_client(app):
     app.config["TESTING"] = True
     with app.test_client() as client:
         with app.app_context():
