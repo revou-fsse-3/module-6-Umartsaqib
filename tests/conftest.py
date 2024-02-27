@@ -1,16 +1,14 @@
 import pytest
-from app import create_app
-from app.utils.database import db
+from app import create_app, db 
 
 @pytest.fixture
 def app():
-    return create_app()
+    app = create_app({"TESTING": True, "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"})
+    with app.app_context():
+        db.create_all()
+        yield app
+        db.drop_all()
 
 @pytest.fixture
 def client(app):
-    app.config["TESTING"] = True
-    with app.test_client() as client:
-        with app.app_context():
-            db.create_all()
-            yield client
-            db.drop_all()
+    return app.test_client()

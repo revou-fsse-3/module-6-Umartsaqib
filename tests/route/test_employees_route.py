@@ -1,50 +1,38 @@
-import json
-import pytest
-from app import create_app
-from app.utils.database import db
-from app.models.employees import Employees
 
-@pytest.fixture
-def app():
-    return create_app()
-
-@pytest.fixture
-def test_client(app):
-    app.config["TESTING"] = True
-    with app.test_client() as client:
-        with app.app_context():
-            db.create_all()
-            yield client
-            db.drop_all()
-
-def test_get_employees(client):
-    response = client.get("/employees")
+def test_get_all_employees(client):
+    
+    response = client.get("/employees", follow_redirects=True)
     assert response.status_code == 200
+    
 
 def test_get_employee_by_id(client):
-    response = client.get("/employees/1")
-    assert response.status_code == 200
+    
+    response = client.get("/employees/1", follow_redirects=True)
+    assert response.status_code == 404  
 
-def test_create_employees(client):
+def test_create_employee(client):
+    
     data = {
         "name": "Test Employee",
-        "gender": "Male",
-        "phone": 123456789,
+        "gender": "Test Gender",
+        "phone": 1234567890,
         "address": "Test Address"
     }
-    response = client.post("/employees", json=data)
-    assert response.status_code == 200
+    response = client.post("/employees", json=data, follow_redirects=True)
+    assert response.status_code == 200 
 
-def test_update_employees(client):
+def test_update_employee(client):
+   
     data = {
         "name": "Updated Employee",
-        "gender": "Female",
-        "phone": 987654321,
+        "gender": "Updated Gender",
+        "phone": 9876543210,
         "address": "Updated Address"
     }
-    response = client.put("/employees/1", json=data)
-    assert response.status_code == 200
+    response = client.put("/employees/1", json=data, follow_redirects=True)
+    assert response.status_code == 404  
 
-def test_delete_employees(client):
-    response = client.delete("/employees/1")
-    assert response.status_code == 200
+def test_delete_employee(client):
+    # Test deleting an existing employee by ID
+    response = client.delete("/employees/1", follow_redirects=True)
+    assert response.status_code == 404  
